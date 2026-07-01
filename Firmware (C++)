@@ -1,0 +1,27 @@
+#define ESP32_BLE_KEYBOARD_NAME "XIAO MacroPad"
+#include <BleKeyboard.h>
+
+const int BUTTON_PIN = D0; 
+bool lastButtonState = LOW;
+
+BleKeyboard bleKeyboard(ESP32_BLE_KEYBOARD_NAME, "Seeed Studio", 100);
+
+void setup() {
+  pinMode(BUTTON_PIN, INPUT); 
+  bleKeyboard.begin();
+}
+
+void loop() {
+  if (bleKeyboard.isConnected()) {
+    int currentButtonState = digitalRead(BUTTON_PIN);
+
+    if (currentButtonState == HIGH && lastButtonState == LOW) {
+      bleKeyboard.press(KEY_LEFT_CTRL);
+      bleKeyboard.press('c');
+      delay(100); 
+      bleKeyboard.releaseAll();
+      delay(150); 
+    }
+    lastButtonState = currentButtonState;
+  }
+}
